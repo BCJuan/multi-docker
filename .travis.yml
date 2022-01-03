@@ -1,8 +1,9 @@
-  language: generic 
 sudo: required
+language: generic
+
 services:
- - docker
-  
+  - docker
+
 before_install:
   - docker build -t bcjuan/react-test -f ./client/Dockerfile.dev ./client
 
@@ -14,7 +15,9 @@ after_success:
   - docker build -t bcjuan/multi-nginx ./nginx
   - docker build -t bcjuan/multi-server ./server
   - docker build -t bcjuan/multi-worker ./worker
+  # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
   - docker push bcjuan/multi-client
   - docker push bcjuan/multi-nginx
   - docker push bcjuan/multi-server
