@@ -1,0 +1,20 @@
+sudo: required
+services:
+ - docker
+  
+before_install:
+  - docker build -t bcjuan/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run bcjuan/react-test npm test 
+
+after_success:
+  - docker build -t bcjuan/multi-client ./client
+  - docker build -t bcjuan/multi-nginx ./nginx
+  - docker build -t bcjuan/multi-server ./server
+  - docker build -t bcjuan/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push bcjuan/multi-client
+  - docker push bcjuan/multi-nginx
+  - docker push bcjuan/multi-server
+  - docker push bcjuan/multi-worker
